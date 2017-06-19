@@ -1,10 +1,3 @@
-//515030910468 Ò¶ÔóÁÖ
-/*
-    ±¾³ÌĞòÊµÏÖÁË´ÓÎÄ±¾ÖĞ¶ÁÈëÒ»¸öº¬ÓĞÖ±½Ó×óµİ¹éµÄÉÏÏÂÎÄÎŞ¹ØÎÄ·¨£¬¹¹ÔìÔ¤²â·ÖÎö±í²¢
-ÒÔÎÄ±¾ÎÄ¼şĞÎÊ½Êä³ö
-    ÊµÏÖË¼Ïë¼°Ïà¹Ø²âÊÔ¿É²Î¼ûreadme.txtÎÄ¼ş
-*/
-
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
@@ -24,11 +17,11 @@ using namespace std;
 ifstream in;
 ofstream out;
 
-//±£´æ²úÉúÊ½µÄĞÅÏ¢
+//ä¿å­˜äº§ç”Ÿå¼çš„ä¿¡æ¯
 class generator {
 public:
-	string left;		//²úÉúÊ½×ó²¿
-	set<string> right;	//²úÉúÊ½ÓÒ²¿
+	string left;		//äº§ç”Ÿå¼å·¦éƒ¨
+	set<string> right;	//äº§ç”Ÿå¼å³éƒ¨
 	generator(string s){ 
 		left = s; 
 	}
@@ -49,20 +42,20 @@ public:
 	}
 };
 
-map<string, set<string>> first;		//FIRST¼¯ºÏ
-map<string, set<string>> follow;	//FOLLOW¼¯ºÏ
-map<string, int> VN_dic;			//·ÇÖÕ½á·ûË÷Òı
-set<string> signals;				//ËùÓĞ·ûºÅ
-set<string> VT;						//ÖÕ½á·û¼¯
-set<string> VN;						//·ÇÖÕ½á·û¼¯
-vector<generator> Gener;			//²úÉúÊ½¼¯
-vector<map<string, string> > predict;		//Ô¤²â·ÖÎö±í
+map<string, set<string>> first;		//FIRSTé›†åˆ
+map<string, set<string>> follow;	//FOLLOWé›†åˆ
+map<string, int> VN_dic;			//éç»ˆç»“ç¬¦ç´¢å¼•
+set<string> signals;				//æ‰€æœ‰ç¬¦å·
+set<string> VT;						//ç»ˆç»“ç¬¦é›†
+set<string> VN;						//éç»ˆç»“ç¬¦é›†
+vector<generator> Gener;			//äº§ç”Ÿå¼é›†
+vector<map<string, string> > predict;		//é¢„æµ‹åˆ†æè¡¨
 int n;
 
 const int MAXLEN = 100;
-bool flag[MAXLEN];			//ÇóFIRST¼¯ºÏÓÃ
+bool flag[MAXLEN];			//æ±‚FIRSTé›†åˆç”¨
 
-//¶ÁÈëÎÄ±¾ÎÄ¼ş
+//è¯»å…¥æ–‡æœ¬æ–‡ä»¶
 void readin() {
 	int i, j, k, tmpright;
 	string tmpstr, vn, vn_right, rubbish, tmpsig;
@@ -76,7 +69,7 @@ void readin() {
 		in.getline(ch, 80, '\n');
 		tmpstr = ch;
 
-		//¶Á²úÉúÊ½×ó²¿
+		//è¯»äº§ç”Ÿå¼å·¦éƒ¨
 		j = 0;
 		while (tmpstr[j] != ' ') {
 			vn.push_back(tmpstr[j]);
@@ -89,7 +82,7 @@ void readin() {
 		if (!VN.count(vn)) {
 			VN.insert(vn);
 		}
-		//¶Á²úÉúÊ½ÓÒ²¿
+		//è¯»äº§ç”Ÿå¼å³éƒ¨
 		j += 4;
 		tmpright = j;
 		while (j < tmpstr.size()) {
@@ -108,7 +101,7 @@ void readin() {
 				for (k = tmpright; k < j; ++k) {
 					vn_right.push_back(tmpstr[k]);
 				}
-				int tmp = VN_dic[vn] - 1;		//¼ÇÂ¼·ÇÖÕ½á·ûË³Ğò
+				int tmp = VN_dic[vn] - 1;		//è®°å½•éç»ˆç»“ç¬¦é¡ºåº
 				Gener[tmp].insert(vn_right);
 				vn_right.clear();
 
@@ -118,17 +111,17 @@ void readin() {
 		}
 	}
 
-	//ÖÕ½á·û¼¯
+	//ç»ˆç»“ç¬¦é›†
 	for (set<string>::iterator it = signals.begin(); it != signals.end(); it++) {
 		if (!VN.count(*it)) {
 			VT.insert(*it);
 		}
 	}
-	//ÕâÀï°Ñ$Ò²ËãÔÚÖÕ½á·û¼¯ÀïÃæ
+	//è¿™é‡ŒæŠŠ$ä¹Ÿç®—åœ¨ç»ˆç»“ç¬¦é›†é‡Œé¢
 	VT.insert("$");
 }
 
-//Ïû³ıÖ±½Ó×óµİ¹é
+//æ¶ˆé™¤ç›´æ¥å·¦é€’å½’
 void delLeftRec() {
 	for (int i = 0; i < Gener.size(); ++i) {
 		string str = Gener[i].left;
@@ -149,12 +142,12 @@ void delLeftRec() {
 
 		flag = true;
 		for (; it != temp->end(); it++) {
-			string now;	//´ıËÑË÷×Ö·û
+			string now;	//å¾…æœç´¢å­—ç¬¦
 			int j;
 			for (j = 0; j < it->length() && (*it)[j] != ' '; ++j) {
 				now.push_back((*it)[j]);
 			}
-			if (now == str) {	//ËÑË÷µ½Ö±½Ó×óµİ¹é
+			if (now == str) {	//æœç´¢åˆ°ç›´æ¥å·¦é€’å½’
 				Gener.push_back(generator(tt));
 				temp1 = &(Gener[i].right);
 				VN_dic[tt] = Gener.size();
@@ -167,15 +160,15 @@ void delLeftRec() {
 			continue;
 		}
 		vector<string> cont;
-		set<string>& ss = Gener[x].right;		//ĞÂ²úÉúÊ½ÓÒ²¿
-		ss.insert("~");			//ĞÂ²úÉúÊ½²åÈë¿Õ´®
+		set<string>& ss = Gener[x].right;		//æ–°äº§ç”Ÿå¼å³éƒ¨
+		ss.insert("~");			//æ–°äº§ç”Ÿå¼æ’å…¥ç©ºä¸²
 		VN.insert(tt);
 		if (signals.count("~") == 0) {
 			signals.insert("~");
 			VT.insert("~");
 		}
-		while (!temp1->empty()) {		//´¦ÀíÔ­²úÉúÊ½ÓÒ²¿
-			string now;	//´ıËÑË÷×Ö·û
+		while (!temp1->empty()) {		//å¤„ç†åŸäº§ç”Ÿå¼å³éƒ¨
+			string now;	//å¾…æœç´¢å­—ç¬¦
 			int j;
 			set<string>::iterator it1 = temp1->begin();
 			for (j = 0; j < it1->length() && (*it1)[j] != ' '; ++j) {
@@ -187,20 +180,20 @@ void delLeftRec() {
 			else {
 				cont.push_back(temp1->begin()->substr(0) + " " + tt);
 			}
-			temp1->erase(temp1->begin());		//Ô­²úÉúÊ½ÓÒ²¿ÇåÀí
+			temp1->erase(temp1->begin());		//åŸäº§ç”Ÿå¼å³éƒ¨æ¸…ç†
 		}
 		for (int i = 0; i < cont.size(); ++i) {
 			temp1->insert(cont[i]);
 		}
 	}
 
-	//Êä³öÏû³ı½á¹û
+	//è¾“å‡ºæ¶ˆé™¤ç»“æœ
 	/*for (int i = 0; i < Gener.size(); ++i) {
 		Gener[i].print();
 	}*/
 }
 
-//Çó½âFIRST¼¯ºÏ
+//æ±‚è§£FIRSTé›†åˆ
 void solveFirst(int x) {
 	if (flag[x]) {
 		return;
@@ -214,22 +207,22 @@ void solveFirst(int x) {
 	for (; it != right.end(); it++) {
 		bool flag = true;
 		for (int i = 0; i < it->length();) {
-			string now;	//´ıËÑË÷×Ö·û
+			string now;	//å¾…æœç´¢å­—ç¬¦
 			int j;
 			for (j = i; j < it->length() && (*it)[j] != ' '; ++j) {
 				now.push_back(it->at(j));
 				i++;
 			}
-			if (VT.count(now)) { //ÎªÖÕ½á·û£¬Ö±½Ó¼ÓÈëFIRST¼¯ºÏ
+			if (VT.count(now)) { //ä¸ºç»ˆç»“ç¬¦ï¼Œç›´æ¥åŠ å…¥FIRSTé›†åˆ
 				first[left].insert(now);
 				break;
 			}
-			else if (VN.count(now)) {	//·ÇÖÕ½á·û£¬¡°±éÀú¡±Æä²úÉúÊ½ÓÒ²¿
+			else if (VN.count(now)) {	//éç»ˆç»“ç¬¦ï¼Œâ€œéå†â€å…¶äº§ç”Ÿå¼å³éƒ¨
 				int y;
 				if (VN_dic.count(it->substr(i - now.size(), now.size()))) {
 					y = VN_dic[it->substr(i - now.size(), now.size())] - 1;
 				}
-				i++;	//ÏÖÔÚiÖ¸Ïò²úÉúÊ½ÓÒ²¿ÏÂÒ»¸ö·ûºÅ
+				i++;	//ç°åœ¨iæŒ‡å‘äº§ç”Ÿå¼å³éƒ¨ä¸‹ä¸€ä¸ªç¬¦å·
 
 				string& tleft = Gener[y].left;
 				solveFirst(y);
@@ -237,7 +230,7 @@ void solveFirst(int x) {
 				set<string>::iterator it1 = temp.begin();
 				bool tmp_flag = true;
 				for (; it1 != temp.end(); it1++) {
-					if ((*it1) == "~") {		//´¦Àí¿Õ´®
+					if ((*it1) == "~") {		//å¤„ç†ç©ºä¸²
 						tmp_flag = false;
 					}
 					first[left].insert(*it1);
@@ -253,11 +246,11 @@ void solveFirst(int x) {
 	}
 }
 
-//Çó½âFIRST¼¯ºÏ
+//æ±‚è§£FIRSTé›†åˆ
 void getFIRST() {
 	int i;
 
-	//±¾¹ı³ÌÊµ¼ÊÉÏÊÇÒ»¸öÉîËÑ
+	//æœ¬è¿‡ç¨‹å®é™…ä¸Šæ˜¯ä¸€ä¸ªæ·±æœ
 	for (i = 0; i < MAXLEN; ++i) {
 		flag[i] = 0;
 	}
@@ -265,8 +258,8 @@ void getFIRST() {
 		solveFirst(i);
 	}
 
-	//Êä³öFIRST¼¯ºÏ
-	/*out << "FIRST¼¯ºÏ\n";
+	//è¾“å‡ºFIRSTé›†åˆ
+	/*out << "FIRSTé›†åˆ\n";
 	map<string, set<string> >::iterator it = first.begin();
 	set<string>::iterator it2 = signals.begin();
 	for (; it != first.end(); it++)
@@ -286,7 +279,7 @@ void getFIRST() {
 	}*/
 }
 
-//½«·ÇÖÕ½á·ûstr1µÄFOLLOW¼¯ºÏ¼Óµ½·ÇÖÕ½á·ûstr2µÄFOLLOW¼¯ºÏ
+//å°†éç»ˆç»“ç¬¦str1çš„FOLLOWé›†åˆåŠ åˆ°éç»ˆç»“ç¬¦str2çš„FOLLOWé›†åˆ
 void append(const string& str1, const string& str2) {
 	set<string>& come = follow[str1];
 	set<string>& go = follow[str2];
@@ -296,9 +289,9 @@ void append(const string& str1, const string& str2) {
 	}
 }
 
-//Çó½âFOLLOW¼¯ºÏ
+//æ±‚è§£FOLLOWé›†åˆ
 void getFOLLOW() {
-	follow[Gener[0].left].insert("$");		//ÔÚ¿ªÊ¼·ûµÄFOLLOW¼¯ºÏ¼ÓÈë$·ûºÅ
+	follow[Gener[0].left].insert("$");		//åœ¨å¼€å§‹ç¬¦çš„FOLLOWé›†åˆåŠ å…¥$ç¬¦å·
 	while (true){
 		bool goon = false;
 		for (int i = 0; i < Gener.size(); ++i) {
@@ -309,21 +302,21 @@ void getFOLLOW() {
 				bool flag = true;
 				const string& str = *it;
 				for (int j = it->length() - 1; j >= 0;) {
-					string now;	//´ıËÑË÷×Ö·û
+					string now;	//å¾…æœç´¢å­—ç¬¦
 					int jj;
 					for (jj = j; jj >=0 && (*it)[jj] != ' '; --jj) {
 						now.push_back(it->at(jj));
 						j--;
 					}
-					j++;		//ÏÖÔÚjÖ¸Ïò(*it)ÖĞnowµÄµÚÒ»¸ö×Ö·û
+					j++;		//ç°åœ¨jæŒ‡å‘(*it)ä¸­nowçš„ç¬¬ä¸€ä¸ªå­—ç¬¦
 					reverse(now.begin(),now.end());
 
-					//·ÇÖÕ½á·û
+					//éç»ˆç»“ç¬¦
 					if (VN.count(now)) {
 						int x = VN_dic[it->substr(j, now.size())] - 1;
 						if (flag) {
 							int tt = follow[it->substr(j, now.size())].size();
-							append(left, it->substr(j, now.size()));	//FOLLOW¼¯ºÏµÄ½»»¥
+							append(left, it->substr(j, now.size()));	//FOLLOWé›†åˆçš„äº¤äº’
 							if (!Gener[x].right.count("~")) {
 								flag = false;
 							}
@@ -333,21 +326,21 @@ void getFOLLOW() {
 							}
 						}
 						for (int k = j + now.size() + 1; k < it->length();) {
-							string now1;	//´ıËÑË÷×Ö·û
+							string now1;	//å¾…æœç´¢å­—ç¬¦
 							int kk;
 							for (kk = k; kk < it->length() && (*it)[kk] != ' '; ++kk) {
 								now1.push_back(it->at(kk));
 								k++;
 							}
 
-							if (VN.count(now1)) {	//·ÇÖÕ½á·û
+							if (VN.count(now1)) {	//éç»ˆç»“ç¬¦
 								string id;
 								id = it->substr(k - now1.size(), now1.size());
 								set<string>& from = first[id];
 								set<string>& to = follow[it->substr(j, now.size())];
 								set<string>::iterator it1 = from.begin();
 								int tt = follow[it->substr(j, now.size())].size();
-								//FIRST¼¯ºÏÖĞ³ı¿Õ×ÖÍâµÄ·ûºÅ¶¼¼ÓÈëFOLLOW(B)
+								//FIRSTé›†åˆä¸­é™¤ç©ºå­—å¤–çš„ç¬¦å·éƒ½åŠ å…¥FOLLOW(B)
 								for (; it1 != from.end(); it1++) {
 									if ((*it1) != "~") {
 										to.insert(*it1);
@@ -361,7 +354,7 @@ void getFOLLOW() {
 									break;
 								}
 							}
-							else if(VT.count(now1)) {	//ÖÕ½á·û
+							else if(VT.count(now1)) {	//ç»ˆç»“ç¬¦
 								int tt = follow[it->substr(j, now.size())].size();
 								string tmpstr = now1;
 								follow[it->substr(j, now.size())].insert(tmpstr);
@@ -384,8 +377,8 @@ void getFOLLOW() {
 		if (!goon) break;
 	}
 
-	//Êä³öFOLLOW¼¯ºÏ
-	/*out << "FOLLOW¼¯ºÏ\n";
+	//è¾“å‡ºFOLLOWé›†åˆ
+	/*out << "FOLLOWé›†åˆ\n";
 	map<string, set<string> >::iterator it = follow.begin();
 	for (; it != follow.end(); it++) {
 		out << "FOLLOW(" << it->first << ")={";
@@ -403,18 +396,18 @@ void getFOLLOW() {
 	}*/
 }
 
-//¼ì²éstrÊÇ·ñÊôÓÚtextµÄFIRST¼¯ºÏ
+//æ£€æŸ¥stræ˜¯å¦å±äºtextçš„FIRSTé›†åˆ
 bool searchFIRST(const string& text, string str) {
 	for (int i = 0; i < text.length();) {
 		bool hasEmpty = false;
-		string now;	//´ıËÑË÷×Ö·û
+		string now;	//å¾…æœç´¢å­—ç¬¦
 		int j;
 		for (j = i; j < text.length() && text[j] != ' '; ++j) {
 			now.push_back(text[j]);
 			i++;
 		}
 		i++;
-		if (VT.count(now)) {	//ÖÕ½á·ûµÄFIRST¼¯ºÏ¾ÍÊÇÆä±¾Éí
+		if (VT.count(now)) {	//ç»ˆç»“ç¬¦çš„FIRSTé›†åˆå°±æ˜¯å…¶æœ¬èº«
 			if (now != str) {
 				return false;
 			}
@@ -444,7 +437,7 @@ bool searchFIRST(const string& text, string str) {
 	return false;
 }
 
-//¼ì²éstrÊÇ·ñÊôÓÚtextµÄFOLLOW¼¯ºÏ
+//æ£€æŸ¥stræ˜¯å¦å±äºtextçš„FOLLOWé›†åˆ
 bool searchFOLLOW(const string& text, string str) {
 	set<string>& dic = follow[text];
 	set<string>::iterator it = dic.begin();
@@ -456,12 +449,12 @@ bool searchFOLLOW(const string& text, string str) {
 	return false;
 }
 
-//¹¹ÔìÔ¤²â·ÖÎö±í
+//æ„é€ é¢„æµ‹åˆ†æè¡¨
 void getTable() {
 	map<string, string> temp;
 	vector<string> letter;
 
-	for (int i = 0; i < Gener.size(); ++i) {	//ÊµÏÖÊéÉÏÃèÊöµÄ¹¹ÔìÂß¼­
+	for (int i = 0; i < Gener.size(); ++i) {	//å®ç°ä¹¦ä¸Šæè¿°çš„æ„é€ é€»è¾‘
 		temp.clear();
 		string& left = Gener[i].left;
 		set<string>& right = Gener[i].right;
@@ -482,14 +475,14 @@ void getTable() {
 		predict.push_back(temp);
 	}
 
-	//Êä³öÔ¤²â·ÖÎö±í
+	//è¾“å‡ºé¢„æµ‹åˆ†æè¡¨
 	bool tmpflag = false;
 	for (set<string>::iterator it = VT.begin(); it != VT.end(); it++) {
 		if ((*it) == "~") {
 			tmpflag = true;
 		}
 	}
-	if (!tmpflag) {			//ÕâÒ»²½½ö½öÊÇÎªÁËÊä³öºÃ¿´¡£¡£
+	if (!tmpflag) {			//è¿™ä¸€æ­¥ä»…ä»…æ˜¯ä¸ºäº†è¾“å‡ºå¥½çœ‹ã€‚ã€‚
 		VT.insert("~");
 	}
 	for (int i = 0; i <= VT.size() * 12; ++i) {
@@ -534,7 +527,7 @@ void getTable() {
 	}
 }
 
-//ÒÔÏÂº¯ÊıÎª±à³ÌÊ±debugÓÃ£¬ÔÚÊµ¼Ê³ÌĞòÖĞ²»ĞèÒªÔËĞĞ
+//ä»¥ä¸‹å‡½æ•°ä¸ºç¼–ç¨‹æ—¶debugç”¨ï¼Œåœ¨å®é™…ç¨‹åºä¸­ä¸éœ€è¦è¿è¡Œ
 /*
 void printGener() {
 	for (int i = 0; i < Gener.size(); ++i) {
@@ -560,11 +553,11 @@ int main()
 	in.open("test.txt");
 	out.open("result.txt");
 
-	readin();		//¶ÁÈëÊı¾İ
-	delLeftRec();	//Ïû³ı×óµİ¹é
-	getFIRST();		//ÇóFIRST¼¯ºÏ
-	getFOLLOW();	//ÇóFOLLOW¼¯ºÏ
-	getTable();		//ÇóÔ¤²â·ÖÎö±í
+	readin();		//è¯»å…¥æ•°æ®
+	delLeftRec();	//æ¶ˆé™¤å·¦é€’å½’
+	getFIRST();		//æ±‚FIRSTé›†åˆ
+	getFOLLOW();	//æ±‚FOLLOWé›†åˆ
+	getTable();		//æ±‚é¢„æµ‹åˆ†æè¡¨
 
 	in.close();
 	out.close();
